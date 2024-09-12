@@ -94,7 +94,7 @@ class Backbone(BackboneBase):
                  return_interm_layers: bool,
                  dilation: bool):
         backbone = PPLCNetEngine(
-            scale=1.0,  pretrained=r"torchpred/PPLCNet_x1_0_ssld_pretrained")
+            scale=1.0,  pretrained=r"/content/L-DETR/torchpred/PPLCNet_x1_0_ssld_pretrained")
         num_channels = 1280
         print(backbone)
         super().__init__(backbone, train_backbone, num_channels, return_interm_layers)
