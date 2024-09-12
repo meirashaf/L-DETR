@@ -66,10 +66,12 @@ class BackboneBase(nn.Module):
                     and 'hardswish' not in name:
                 parameter.requires_grad_(False)
         if return_interm_layers:
-            return_layers = {"conv1": "0", "blocks2": "1", "blocks3": "2", "blocks4": "3", "blocks5": "4", "blocks6": "5", "last_conv": "6", "hardswish": "7"}
+            return_layers = {"conv1": "0", "blocks2": "1", "blocks3": "2", "blocks4": "3",
+                             "blocks5": "4", "blocks6": "5", "last_conv": "6", "hardswish": "7"}
         else:
             return_layers = {'hardswish': "0"}
-        self.body = IntermediateLayerGetter(backbone, return_layers=return_layers)
+        self.body = IntermediateLayerGetter(
+            backbone, return_layers=return_layers)
         self.num_channels = num_channels
 
     def forward(self, tensor_list: NestedTensor):
@@ -78,18 +80,21 @@ class BackboneBase(nn.Module):
         for name, x in xs.items():
             m = tensor_list.mask
             assert m is not None
-            mask = F.interpolate(m[None].float(), size=x.shape[-2:]).to(torch.bool)[0]
+            mask = F.interpolate(
+                m[None].float(), size=x.shape[-2:]).to(torch.bool)[0]
             out[name] = NestedTensor(x, mask)
         return out
 
 
 class Backbone(BackboneBase):
+    """ResNet backbone with frozen BatchNorm."""
 
     def __init__(self, name: str,
                  train_backbone: bool,
                  return_interm_layers: bool,
                  dilation: bool):
-        backbone = PPLCNetEngine(scale=1.0,  pretrained=r"torchpred/PPLCNet_x1_0_ssld_pretrained")
+        backbone = PPLCNetEngine(
+            scale=1.0,  pretrained=r"torchpred/PPLCNet_x1_0_ssld_pretrained")
         num_channels = 1280
         print(backbone)
         super().__init__(backbone, train_backbone, num_channels, return_interm_layers)
@@ -115,7 +120,8 @@ def build_backbone(args):
     position_embedding = build_position_encoding(args)
     train_backbone = args.lr_backbone > 0
     return_interm_layers = args.masks
-    backbone = Backbone(args.backbone, train_backbone, return_interm_layers, args.dilation)
+    backbone = Backbone(args.backbone, train_backbone,
+                        return_interm_layers, args.dilation)
     model = Joiner(backbone, position_embedding)
     model.num_channels = backbone.num_channels
     return model

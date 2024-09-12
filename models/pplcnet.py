@@ -18,8 +18,11 @@ NET_CONFIG = {
 }
 
 
-'''_make_divisible()作用将卷积核个数调整到8的整数倍。
-   '''
+'''
+   _make_divisible()作用将卷积核个数调整到8的整数倍。
+    The function is to adjust the number of convolution kernels 
+    to an integer multiple of 8.   
+'''
 
 
 def make_divisible(v, divisor=8, min_value=None):
@@ -170,7 +173,7 @@ class PPLCNet(nn.Module):
             for i, (k, in_c, out_c, s, se) in enumerate(NET_CONFIG["blocks6"])
         ])
 
-        #self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        # self.avg_pool = nn.AdaptiveAvgPool2d(1)
 
         self.last_conv = nn.Conv2d(
             in_channels=make_divisible(NET_CONFIG["blocks6"][-1][2] * scale),
@@ -195,7 +198,7 @@ class PPLCNet(nn.Module):
         x = self.blocks4(x)
         x = self.blocks5(x)
         x = self.blocks6(x)
-        #x = self.avg_pool(x)
+        # x = self.avg_pool(x)
         x = self.last_conv(x)
         x = self.hardswish(x)
         # x = self.dropout(x)
@@ -209,4 +212,3 @@ def PPLCNetEngine(scale=1.0,  pretrained=None):
     if pretrained is not None:
         load_dygraph_pretrain(model, pretrained)
     return model
-
