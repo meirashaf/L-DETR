@@ -457,7 +457,7 @@ def interpolate(input, size=None, scale_factor=None, mode="nearest", align_corne
     class can go away.
     """
     # if float(torchvision.__version__[:3]) < 0.7:
-     if version.parse(torchvision.__version__) < version.parse('0.7'):
+    if version.parse(torchvision.__version__) < version.parse('0.7'):
         if input.numel() > 0:
             return torch.nn.functional.interpolate(
                 input, size, scale_factor, mode, align_corners
